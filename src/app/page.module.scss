@@ -1,0 +1,88 @@
+.logo {
+  margin: 1rem 1.5rem;
+}
+
+.container {
+  margin: 5rem 1rem;
+  text-align: center;
+  color: var(--primary-text);
+  max-width: 576px;
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+  }
+  p {
+    text-align: center;
+    font-size: 0.875rem;
+    margin: 1rem;
+  }
+}
+
+.btnContainer {
+  margin: 3rem 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  a {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 1.875rem;
+  }
+  .primaryBtn {
+    background-color: var(--primary);
+    font-weight: bold;
+    padding: 1rem 1.25rem;
+    gap: 0.5rem;
+    color: #fff;
+  }
+  .secondaryBtn {
+    font-weight: 400;
+    color: var(--secondary-text);
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--secondary-text);
+    padding: 1rem 2.25rem;
+  }
+}
+
+.carouselContainer {
+  @keyframes slide {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  .topCarouselContainer,
+  .bottomCarouselContainer {
+    display: inline-flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .topCarousel,
+  .bottomCarousel {
+    display: flex;
+    gap: 0.5rem;
+    white-space: nowrap;
+    animation: 35s slide infinite linear;
+  }
+  .bottomCarousel {
+    animation-direction: reverse;
+  }
+}
+
+@media (min-width: 576px) {
+  .logo {
+    margin: 2rem 3rem;
+  }
+  .container {
+    margin: 6rem auto;
+    h2 {
+      font-size: 3.5rem;
+    }
+    p {
+      font-size: 1rem;
+    }
+  }
+}
