@@ -29,15 +29,19 @@ export default function Home() {
   ];
   const topCarousel = (
     <>
-      {carouselImages.map((image) => {
-        return <Image src={image} width={0} height={0} alt="ucla" />;
+      {carouselImages.map((image, index) => {
+        return (
+          <Image key={index} src={image} width={0} height={0} alt="ucla" />
+        );
       })}
     </>
   );
   const bottomCarousel = (
     <>
-      {carouselImages.reverse().map((image) => {
-        return <Image src={image} width={0} height={0} alt="ucla" />;
+      {carouselImages.reverse().map((image, index) => {
+        return (
+          <Image key={index} src={image} width={0} height={0} alt="ucla" />
+        );
       })}
     </>
   );
