@@ -8,8 +8,8 @@ const app = express();
 app.use(express.json());
 
 // Route to get user
-app.get("/api/user", async (req, res) => {
-  const { user_id } = req.body;
+app.get("/api/user/:userId", async (req, res) => {
+  const  user_id = req.params.userId;
 
   try {
     const user = await getUser({ user_id });

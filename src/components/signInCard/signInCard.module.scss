@@ -1,0 +1,44 @@
+
+.logo {
+    position: absolute;
+    margin-top: 1rem;
+    width: 100%;
+    text-align: center;
+}
+
+.image {
+  display: none;
+}
+
+.container {
+  background-color: var(--secondary-bg);
+  position: relative;
+  width: 100%;
+  margin: 1rem;
+  border-radius: 0.625rem;
+  height: 28rem;
+}
+
+.formContainer {
+    height: 100%;
+}
+
+.btnContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.googleBtn {
+    border-radius: .25rem;
+    border: 1px solid var(--primary-text);
+    background-color: var(--secondary-bg);
+    color: var(--primary-text);
+    padding: .5rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:.75rem;
+    font-weight: 600;
+}

@@ -1,3 +1,3 @@
 export default function Regsiter() {
-    return <></>
+    return <>asd</>
 }

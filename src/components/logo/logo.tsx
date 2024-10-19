@@ -11,7 +11,7 @@ export default function Logo({ size, className }: logoProps) {
       className={`${styles.logo} ${className}`}
       style={size ? { fontSize: size } : { fontSize: 32 }}
     >
-      Bruin <span>Connect</span>
+      Bruin <span>Connect.</span>
     </h1>
   );
 }
