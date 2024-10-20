@@ -8,6 +8,7 @@ import google from "../../assets/icons/google.png";
 import { useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { SignOut } from "@/app/api/auth/actions";
+import { useRouter } from "next/navigation";
 
 const majorOptions = [
   { value: "undeclared", label: "Undeclared" },
@@ -238,6 +239,18 @@ const pronounOptions = [
   { value: "null", label: "None" },
 ];
 
+// formats email to hidden email
+function formatEmail(email: String) {
+  // Split the email into username and domain
+  const [username, domain] = email?.split("@");
+
+  // Replace characters in the username with asterisks
+  const formattedUsername = username.slice(0, 3) + "****";
+
+  // Return the formatted email
+  return `${formattedUsername}@${domain}`;
+}
+
 type PageProps = {
   pageName: String;
   userId?: String;
@@ -261,7 +274,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
   });
 
   const [registrationError, setRegistrationError] = useState(false);
-
+  const router = useRouter()
   // POST request to create account
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
 
@@ -275,9 +288,11 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
       if (!response.ok) {
         console.error("Registration response was not ok");
       }
+      if (response?.status == 200) router.push("/");
+
     } catch (error) {
       console.error("Error completing registration:", error);
-    }
+    } 
   }
 
   // Updates formData per key input
@@ -319,37 +334,56 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
         )}
         {pageName == "register" && (
           <form onSubmit={handleSubmit} className={styles.form}>
-            <p>
-              Signed in with: <span>{email}</span>
-            </p>
-            <input
-              name="first_name"
-              placeholder="First Name"
-              onChange={(e) => handleInput(e)}
-              required
-            />
-            <input
-              name="last_name"
-              placeholder="Last Name"
-              onChange={(e) => handleInput(e)}
-              required
-            />
-            <Select
-              isSearchable={true}
-              options={majorOptions}
-              instanceId={"searchMajor"}
-              name="major"
-              onChange={(e) => handleSelect(e, "major")}
-              required
-            />
-            <Select
-              options={pronounOptions}
-              instanceId={"pronouns"}
-              name="pronouns"
-              onChange={(e) => handleSelect(e, "pronouns")}
-              required
-            />
             <div>
+              <input
+                className={styles.input}
+                name="first_name"
+                placeholder="First Name"
+                onChange={(e) => handleInput(e)}
+                required
+              />
+              <input
+                className={styles.input}
+                name="last_name"
+                placeholder="Last Name"
+                onChange={(e) => handleInput(e)}
+                required
+              />
+              <Select
+                className={styles.select}
+                isSearchable={true}
+                options={majorOptions}
+                instanceId={"searchMajor"}
+                name="major"
+                placeholder="Major"
+                onChange={(e) => handleSelect(e, "major")}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    height: "2.5rem",
+                    border: "1px solid rgba(0,0,0,.1)",
+                  }),
+                }}
+                required
+              />
+              <Select
+                className={styles.select}
+                options={pronounOptions}
+                placeholder="Pronouns"
+                instanceId={"pronouns"}
+                name="pronouns"
+                onChange={(e) => handleSelect(e, "pronouns")}
+                styles={{
+                  control: (base) => ({
+                    ...base,
+                    height: "2.5rem",
+                    border: "1px solid rgba(0,0,0,.1)",
+                  }),
+                }}
+                required
+              />
+            </div>
+            <div className={styles.btnContainer}>
               <button
                 onClick={(e) => {
                   e.preventDefault();
@@ -358,7 +392,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
               >
                 Back
               </button>
-              <button type="submit">Create</button>
+              <button type="submit" className={styles.active}>Create</button>
             </div>
           </form>
         )}
