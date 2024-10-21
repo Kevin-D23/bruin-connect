@@ -51,7 +51,8 @@ app.post("/api/user", async (req, res) => {
   const userInfo = { user_id, email, first_name, last_name, major, pronouns };
   try {
     const newUser = await createUser(userInfo);
-    res.status(200).json(newUser);
+    if (newUser) res.status(200).json(newUser);
+    else res.status(500).json();
   } catch (error) {
     console.error("Error creating user:", error);
     res.status(500);

@@ -7,7 +7,7 @@
   @media screen and (min-width: 960px) {
     width: 50%;
     right: 0;
-    left: unset
+    left: unset;
   }
 }
 
@@ -17,7 +17,7 @@
   height: 100%;
   object-fit: cover;
   border-top-left-radius: inherit;
-  border-bottom-left-radius: inherit; 
+  border-bottom-left-radius: inherit;
   @media screen and (min-width: 960px) {
     display: block;
   }
@@ -34,7 +34,6 @@
   max-width: 36rem;
   transition: all 0.1s linear;
   @media screen and (min-width: 960px) {
-
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,7 +45,7 @@
 .formContainer {
   height: 100%;
   padding: 0 2rem;
-  @media screen and (min-width:960px) {
+  @media screen and (min-width: 960px) {
     width: 50%;
   }
 }
@@ -99,7 +98,15 @@
     border-color: var(--primary);
     margin-bottom: 0.5rem;
     font-size: 0.875rem;
+    font-weight: 500;
     color: var(--primary-text);
+  }
+
+  .error {
+    color: red;
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+    padding-left: 0.5rem;
   }
 
   .btnContainer {
@@ -116,6 +123,19 @@
       font-weight: 600;
       border-radius: 3px;
       font-size: 0.7rem;
+      transition: color 0.25s linear, background-color 0.25s linear;
     }
+    .active {
+      background-color: var(--primary);
+      color: var(--primary-bg);
+    }
+  }
+
+  .help {
+    font-size: 0.875rem;
+    padding: 0.5rem;
+    color: var(--primary);
+    text-decoration: underline;
+    cursor: pointer;
   }
 }

@@ -5,7 +5,7 @@ import signInImage from "../../assets/images/signInImage.png";
 import Logo from "@/components/logo/logo";
 import { SignIn } from "@/app/api/auth/actions";
 import google from "../../assets/icons/google.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { SignOut } from "@/app/api/auth/actions";
 import { useRouter } from "next/navigation";
@@ -272,27 +272,39 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
     major: "",
     pronouns: "",
   });
+  const [validForm, setValidForm] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [registrationError, setRegistrationError] = useState(false);
-  const router = useRouter()
+  const router = useRouter();
+
   // POST request to create account
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault();
 
-    try {
-      e.preventDefault();
-      const response = await fetch("http://localhost:8000/api/user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-      if (!response.ok) {
-        console.error("Registration response was not ok");
+    if (checkForm()) {
+      try {
+        const response = await fetch("http://localhost:8000/api/user", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        if (!response.ok) {
+          console.error("Registration response was not ok");
+        }
+        console.log(response);
+        if (response?.status == 200) {
+          if (await response.json()) router.push("/");
+        } else {
+          setErrorMessage("** Error creating account");
+        }
+      } catch (error) {
+        console.error("Error completing registration:", error);
       }
-      if (response?.status == 200) router.push("/");
-
-    } catch (error) {
-      console.error("Error completing registration:", error);
-    } 
+    } else {
+      setErrorMessage("* Must complete all fields!");
+    }
   }
 
   // Updates formData per key input
@@ -311,6 +323,28 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
       [name]: e?.value,
     }));
   }
+
+  // Checks if form is valid/complete
+  function checkForm() {
+    if (
+      formData.first_name &&
+      formData.last_name &&
+      formData.major &&
+      formData.pronouns
+    )
+      return true;
+    return false;
+  }
+
+  // Checks to see if component is mounted so the 'document' can be used
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setValidForm(checkForm());
+  }, [formData]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -335,19 +369,22 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
         {pageName == "register" && (
           <form onSubmit={handleSubmit} className={styles.form}>
             <div>
+              {errorMessage && (
+                <div className={styles.error}>
+                  <p>{errorMessage}</p>
+                </div>
+              )}
               <input
                 className={styles.input}
                 name="first_name"
                 placeholder="First Name"
                 onChange={(e) => handleInput(e)}
-                required
               />
               <input
                 className={styles.input}
                 name="last_name"
                 placeholder="Last Name"
                 onChange={(e) => handleInput(e)}
-                required
               />
               <Select
                 className={styles.select}
@@ -357,6 +394,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                 name="major"
                 placeholder="Major"
                 onChange={(e) => handleSelect(e, "major")}
+                menuPortalTarget={isMounted ? document.body : null}
                 styles={{
                   control: (base) => ({
                     ...base,
@@ -364,7 +402,6 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                     border: "1px solid rgba(0,0,0,.1)",
                   }),
                 }}
-                required
               />
               <Select
                 className={styles.select}
@@ -373,6 +410,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                 instanceId={"pronouns"}
                 name="pronouns"
                 onChange={(e) => handleSelect(e, "pronouns")}
+                menuPortalTarget={isMounted ? document.body : null}
                 styles={{
                   control: (base) => ({
                     ...base,
@@ -380,8 +418,13 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                     border: "1px solid rgba(0,0,0,.1)",
                   }),
                 }}
-                required
               />
+              <a
+                className={styles.help}
+                href={`mailto:${process.env.REACT_APP_EMAIL as string}`}
+              >
+                Need help
+              </a>
             </div>
             <div className={styles.btnContainer}>
               <button
@@ -392,7 +435,9 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
               >
                 Back
               </button>
-              <button type="submit" className={styles.active}>Create</button>
+              <button type="submit" className={validForm ? styles.active : ""}>
+                Create
+              </button>
             </div>
           </form>
         )}
