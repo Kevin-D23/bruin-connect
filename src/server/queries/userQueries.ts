@@ -22,17 +22,43 @@ type User = {
 };
 
 // Get user by id
-export async function getUser({ user_id }: User) {
-	const query = `SELECT * FROM "user" WHERE user_id = ($1)`;
-	const values = [user_id];
+// Return:
+// {
+//   user_id: String;
+//   first_name: String;
+//   last_name: String;
+//   bio: String;
+//   major: String;
+//   pronouns: String;
+// }
+export async function getUserById({ user_id }: User) {
+  const query = `SELECT user_id, first_name, last_name, profile_picture, bio, major, pronouns FROM "user" WHERE user_id = ($1)`;
+  const values = [user_id];
 
-	try {
-	  const result = await db.query(query, values)
-	  return result.rows[0]
-	} catch (error) {
-	  console.error("Error getting user:", error);
-	}
+  try {
+
+    const result = await db.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error getting user:", error);
   }
+}
+
+// Get userId by email
+// Return:
+// {
+//   user_id: String;
+// }
+export async function getUserByEmail({ email }: User) {
+  const query = `SELECT user_id FROM "user" WHERE email = ($1)`;
+  const values = [email];
+  try {
+    const result = await db.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error getting user:", error);
+  }
+}
 
 // Creates a user instance
 export async function createUser({
@@ -43,15 +69,13 @@ export async function createUser({
   major,
   pronouns,
 }: User) {
-  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, major, pronouns) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`;
+
+  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, major, pronouns) VALUES ($1, $2, $3, $4, $5, $6) RETURNING user_id`;
   const values = [user_id, email, first_name, last_name, major, pronouns];
   try {
     const result = await db.query(query, values);
     return result.rows[0];
   } catch (error) {
     console.error("Error creating user:", error);
-
   }
 }
-
-

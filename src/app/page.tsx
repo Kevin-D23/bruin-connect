@@ -13,8 +13,31 @@ import carouselImage7 from "../assets/images/carouselImage7.png";
 import carouselImage8 from "../assets/images/carouselImage8.png";
 import carouselImage9 from "../assets/images/carouselImage9.png";
 import carouselImage10 from "../assets/images/carouselImage10.png";
+import { auth } from "@/auth";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
+  const session = await auth();
+  const userId = session?.user?.id;
+  let redirectPath: string | null = null;
+  // Checks if user session exists
+  // If session exists, redirect to home page
+  if (session)
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/${userId}`);
+      if (!response.ok) {
+        console.error("Network response was not ok");
+      }
+      const result = await response.json();
+
+      // If user exists in database, redirect
+      if (result) redirectPath = "/home";
+    } catch (error) {
+      console.error("Sign in: User does not exist");
+    } finally {
+      if (redirectPath) redirect(redirectPath);
+    }
+
   const carouselImages = [
     carouselImage1,
     carouselImage2,
@@ -48,7 +71,7 @@ export default function Home() {
 
   return (
     <div className={styles.page}>
-      <main className={styles.main}>
+      <main>
         <Logo size={24} className={styles.logo} />
         <div className={styles.container}>
           <h2>
