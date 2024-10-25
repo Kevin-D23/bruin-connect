@@ -1,5 +1,5 @@
 "use client";
-import { SignOut } from "../api/auth/actions";
+import { SignOut } from "../../api/auth/actions";
 export default function Home() {
   return (
     <>

@@ -6,6 +6,6 @@ export async function SignIn() {
   await signIn("google", { redirectTo: "/signIn" });
 }
 
-export async function SignOut(callback: string | undefined) {
+export async function SignOut(callback?: string) {
   await signOut({ redirectTo: callback ?? "/" });
 }
