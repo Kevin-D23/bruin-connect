@@ -1,0 +1,40 @@
+.navbar {
+  height: 3.75rem;
+  background-color: var(--secondary-bg);
+
+  .container {
+    max-width: 68.75rem;
+    border: 1px solid red;
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    margin: auto;
+
+    ul {
+      display: flex;
+      list-style: none;
+      align-items: center;
+      gap: 2rem;
+
+      li {
+        height: 100%;
+        a {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
+          height: 100%;
+          .icon {
+            width: 1.625rem;
+            height: 1.625rem;
+          }
+
+          p{
+            display: none;
+          }
+        }
+      }
+    }
+  }
+}

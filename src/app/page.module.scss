@@ -81,7 +81,7 @@
 .bottomCarouselContainer::after {
   position: absolute;
   top: 0;
-  width: 250px;
+  width: 100px;
   height: 100%;
   content: "";
   z-index: 2;
@@ -93,7 +93,7 @@
   background: linear-gradient(
     to left,
     rgba(0, 0, 0, 0),
-    rgba(255, 255, 255, 0.7)
+    rgba(255, 255, 255, 0.5)
   );
 }
 
