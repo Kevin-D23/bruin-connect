@@ -12,6 +12,7 @@
 
 .logo {
   justify-self: center;
+  text-align: center;
 }
 
 .searchContainer {
@@ -28,4 +29,10 @@
     width: 2rem;
     border-radius: 50%;
   }
+}
+
+@media screen and (min-width:600px) {
+    .container {
+        display: none;
+    }
 }

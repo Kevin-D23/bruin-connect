@@ -25,3 +25,9 @@
     fill: var(--primary);
   }
 }
+
+@media screen and (min-width:600px) {
+    .mobileNavbar {
+        display: none;
+    }
+}
