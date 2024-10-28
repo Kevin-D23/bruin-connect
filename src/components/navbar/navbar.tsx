@@ -82,7 +82,7 @@ export default async function Navbar() {
           </li>
         </ul>
         <div className={styles.profileSearchContainer}>
-          <Link href={"/search"}>
+          <Link href={"/search"} className={styles.searchLink}>
             <Image
               className={styles.searchIcon}
               src={Search}

@@ -1,7 +1,7 @@
 .navbar {
   height: 3.75rem;
   background-color: var(--secondary-bg);
-  position: fixed;
+  position: sticky;
   width: 100%;
   .container {
     max-width: 68.75rem;
@@ -52,22 +52,8 @@
       gap: 1rem;
     }
 
-    .searchBar {
-      position: relative;
-      height: fit-content;
-
-      .searchIcon {
-        position: absolute;
-        right: 0.5rem;
-        height: 100%;
-      }
-
-      input {
-        border: 1px solid rgba(0, 0, 0, 0.2);
-        height: 2.5rem;
-        border-radius: 2.875rem;
-        padding: 0.5rem;
-      }
+    .searchLink {
+      margin-top: 6px;
     }
 
     .profile {
