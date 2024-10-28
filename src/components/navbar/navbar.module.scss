@@ -1,0 +1,89 @@
+.navbar {
+  height: 3.75rem;
+  background-color: var(--secondary-bg);
+  position: sticky;
+  width: 100%;
+  .container {
+    max-width: 68.75rem;
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    margin: auto;
+    padding: 0 1rem;
+
+    ul {
+      display: flex;
+      list-style: none;
+      align-items: center;
+      gap: 2rem;
+
+      li {
+        height: 100%;
+        a {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
+          height: 100%;
+          .icon {
+            width: 1.625rem;
+            height: 1.625rem;
+          }
+
+          p {
+            font-size: 0.625rem;
+          }
+        }
+      }
+    }
+    .logoContainer{
+        width: fit-content;
+        .logo {
+            font-size: 1.25rem !important;
+          }
+    }
+  
+
+    .profileSearchContainer {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .searchLink {
+      margin-top: 6px;
+    }
+
+    .profile {
+      justify-self: end;
+      .profileImg {
+        height: 2rem;
+        width: 2rem;
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+.active {
+  color: var(--primary);
+  path {
+    fill: var(--primary);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .navbar {
+    display: none;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  .container {
+    ul {
+      gap: 3rem !important;
+    }
+  }
+}

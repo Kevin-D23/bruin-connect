@@ -421,7 +421,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
               />
               <a
                 className={styles.help}
-                href={`mailto:${process.env.REACT_APP_EMAIL as string}`}
+                href={'mailto:nothing@gmail.com'}
               >
                 Need help
               </a>

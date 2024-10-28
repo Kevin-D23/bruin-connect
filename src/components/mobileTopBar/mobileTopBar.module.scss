@@ -1,0 +1,38 @@
+.container {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr 2fr 1fr;
+  padding: 0 1.5rem;
+  height: 3.75rem;
+  background-color: var(--secondary-bg);
+  position: sticky;
+  top: 0;
+  width: 100%;
+}
+
+.logo {
+  justify-self: center;
+  text-align: center;
+}
+
+.searchContainer {
+    width: fit-content;
+  .search {
+    margin-top: 6px;
+  }
+}
+
+.profile {
+  justify-self: end;
+  .profileImg {
+    height: 2rem;
+    width: 2rem;
+    border-radius: 50%;
+  }
+}
+
+@media screen and (min-width:600px) {
+    .container {
+        display: none;
+    }
+}

@@ -22,7 +22,7 @@ export const {
     }),
   ],
   callbacks: {
-    async signIn({user}) {
+    async signIn({ user }) {
       let result;
       try {
         const response = await fetch(`http://localhost:8000/api/user/email`, {
@@ -38,9 +38,8 @@ export const {
       } catch (error) {
         console.error("SignIn: User does not exist");
       }
-
       if (result.user_id) {
-        user.id= result.user_id;
+        user.id = result.user_id;
       } else {
         user.id = uuidv4();
       }
@@ -48,7 +47,6 @@ export const {
     },
     async jwt({ token, user }) {
       if (user) token.id = user.id;
-
 
       return token;
     },
