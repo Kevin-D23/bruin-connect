@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "../globals.scss";
 import Navbar from "@/components/navbar/navbar";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import MobileTopBar from "@/components/mobileTopBar/mobileTopBar";
 import MobileNavbar from "@/components/mobileNavbar/mobileNavbar";
+import { SessionProvider } from "next-auth/react";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,17 +18,37 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
-  if (!session) {
-    redirect("/");
-  }
+  const userId = session?.user?.id;
+  let redirectPath: string | null = null;
+  // Checks if user session exists
+  // If !user, redirect to landing page
+
+  if (session)
+    try {
+      const response = await fetch(`http://localhost:8000/api/user/${userId}`);
+      if (!response.ok) {
+        console.error("Network response was not ok");
+      }
+      const result = await response.json();
+
+      // If user exists in database, redirect
+      if (!result) redirectPath = "/";
+    } catch (error) {
+      console.error("Sign in: User does not exist");
+      redirect("/");
+    } finally {
+      if (redirectPath) redirect(redirectPath);
+    }
   return (
     <html lang="en">
-      <body>
-        <Navbar />
-        <MobileTopBar />
-        {children}
-        <MobileNavbar />
-      </body>
+      <SessionProvider>
+        <body>
+          <Navbar />
+          <MobileTopBar />
+          {children}
+          <MobileNavbar />
+        </body>
+      </SessionProvider>
     </html>
   );
 }

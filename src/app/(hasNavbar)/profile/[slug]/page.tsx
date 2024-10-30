@@ -1,9 +1,16 @@
 "use client";
-import { SignOut } from "../../../api/auth/actions";
+import { SignOut } from "@/app/api/auth/actions";
 export default function Profile() {
   return (
     <>
-      <button onClick={() => SignOut()}>Sign Out</button>
+      <button
+        onClick={(e) => {
+          e.preventDefault();
+          SignOut("/signIn");
+        }}
+      >
+        Sign Out
+      </button>
     </>
   );
 }

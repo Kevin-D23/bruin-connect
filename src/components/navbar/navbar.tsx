@@ -12,12 +12,12 @@ import Image from "next/image";
 import Link from "next/link";
 import styles from "./navbar.module.scss";
 import { usePathname } from "next/navigation";
-import { auth } from "@/auth";
+import { useSession } from "next-auth/react";
 
-export default async function Navbar() {
+export default function Navbar() {
   const pathname = usePathname();
-  const session = await auth();
-  const userId = session?.user?.id;
+  const session = useSession();
+  const userId = session.data?.user?.id;
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
