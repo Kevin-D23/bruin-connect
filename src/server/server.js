@@ -24,7 +24,7 @@ app.get("/api/user/:userId", async (req, res) => {
     console.error("Error getting user:", error);
     res.status(500);
   }
-});
+}); 
 
 // Route to get user by email
 app.post("/api/user/email", async (req, res) => {
