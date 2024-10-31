@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { SignOut } from "@/app/api/auth/actions";
 import { useRouter } from "next/navigation";
+import ReactCrop, { centerCrop, Crop, makeAspectCrop } from "react-image-crop";
+import "react-image-crop/src/ReactCrop.scss";
 
 const majorOptions = [
   { value: "undeclared", label: "Undeclared" },
@@ -271,12 +273,18 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
     last_name: "",
     major: "",
     pronouns: "",
+    profile_picture: "",
   });
   const [validForm, setValidForm] = useState(false);
-  const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [registrationPage, setRegistrationPage] = useState(1);
 
-  const [registrationError, setRegistrationError] = useState(false);
+  // image variables
+  const [crop, setCrop] = useState<Crop>();
+  const [imageError, setImageError] = useState("");
+  const ASPECT_RATIO = 1;
+  const MIN_DIMENSION = 150;
+
   const router = useRouter();
 
   // POST request to create account
@@ -284,24 +292,26 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
     e.preventDefault();
 
     if (checkForm()) {
-      try {
-        const response = await fetch("http://localhost:8000/api/user", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-        if (!response.ok) {
-          console.error("Registration response was not ok");
+      if (registrationPage == 2)
+        try {
+          const response = await fetch("http://localhost:8000/api/user", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData),
+          });
+          if (!response.ok) {
+            console.error("Registration response was not ok");
+          }
+          console.log(response);
+          if (response?.status == 200) {
+            if (await response.json()) router.push("/");
+          } else {
+            setErrorMessage("** Error creating account");
+          }
+        } catch (error) {
+          console.error("Error completing registration:", error);
         }
-        console.log(response);
-        if (response?.status == 200) {
-          if (await response.json()) router.push("/");
-        } else {
-          setErrorMessage("** Error creating account");
-        }
-      } catch (error) {
-        console.error("Error completing registration:", error);
-      }
+      else setRegistrationPage(2);
     } else {
       setErrorMessage("* Must complete all fields!");
     }
@@ -327,6 +337,8 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
   // Checks if form is valid/complete
   function checkForm() {
     if (
+      formData.email &&
+      formData.user_id &&
       formData.first_name &&
       formData.last_name &&
       formData.major &&
@@ -345,6 +357,44 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  // set imageURL on upload
+  function uploadFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      const imgUrl = reader.result?.toString() || "";
+      setFormData((prevState) => ({
+        ...prevState,
+        profile_picture: imgUrl,
+      }));
+    });
+    reader.readAsDataURL(file);
+  }
+
+  // set crop dimensions
+  function onImageLoad(e: any) {
+    const { width, height, naturalWidth, naturalHeight } = e.currentTarget;
+    if (naturalHeight < MIN_DIMENSION || naturalWidth < MIN_DIMENSION) {
+      setImageError("** Image must be at least 150x150 pixels");
+      setFormData((prevState) => ({ ...prevState, profile_picture: "" }));
+      return;
+    }
+
+    const crop = makeAspectCrop(
+      {
+        unit: "px",
+        width: MIN_DIMENSION,
+      },
+      ASPECT_RATIO,
+      width,
+      height
+    );
+    const centeredCrop = centerCrop(crop, width, height);
+    setCrop(crop);
+  }
 
   return (
     <div className={styles.container}>
@@ -368,75 +418,125 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
         )}
         {pageName == "register" && (
           <form onSubmit={handleSubmit} className={styles.form}>
-            <div>
-              {errorMessage && (
-                <div className={styles.error}>
-                  <p>{errorMessage}</p>
+            {registrationPage == 1 && (
+              <div>
+                {errorMessage && (
+                  <div className={styles.error}>
+                    <p>{errorMessage}</p>
+                  </div>
+                )}
+                <input
+                  className={styles.input}
+                  name="first_name"
+                  placeholder="First Name"
+                  value={formData.first_name}
+                  onChange={(e) => handleInput(e)}
+                />
+                <input
+                  className={styles.input}
+                  name="last_name"
+                  placeholder="Last Name"
+                  value={formData.last_name}
+                  onChange={(e) => handleInput(e)}
+                />
+                <Select
+                  className={styles.select}
+                  isSearchable={true}
+                  options={majorOptions}
+                  instanceId={"searchMajor"}
+                  value={
+                    majorOptions[
+                      majorOptions.findIndex(
+                        (major) => major.value === formData.major
+                      )
+                    ]
+                  }
+                  name="major"
+                  placeholder="Major"
+                  onChange={(e) => handleSelect(e, "major")}
+                  menuPortalTarget={isMounted ? document.body : null}
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      height: "2.5rem",
+                      border: "1px solid rgba(0,0,0,.1)",
+                    }),
+                  }}
+                />
+                <Select
+                  className={styles.select}
+                  options={pronounOptions}
+                  placeholder="Pronouns"
+                  instanceId={"pronouns"}
+                  name="pronouns"
+                  value={
+                    pronounOptions[
+                      pronounOptions.findIndex(
+                        (pronoun) => pronoun.value === formData.pronouns
+                      )
+                    ]
+                  }
+                  onChange={(e) => handleSelect(e, "pronouns")}
+                  menuPortalTarget={isMounted ? document.body : null}
+                  styles={{
+                    control: (base) => ({
+                      ...base,
+                      height: "2.5rem",
+                      border: "1px solid rgba(0,0,0,.1)",
+                    }),
+                  }}
+                />
+                <a className={styles.help} href={"mailto:nothing@gmail.com"}>
+                  Need help
+                </a>
+              </div>
+            )}
+            {registrationPage == 2 && (
+              <div className={styles.imgUpload}>
+                <div className={styles.imgBtnContainer}>
+                  <h2>Profile picture:</h2>
+                  <input type="file" id="uploadBtn" onChange={uploadFile} hidden/>
+                  <label htmlFor="uploadBtn">Upload</label>
+
                 </div>
-              )}
-              <input
-                className={styles.input}
-                name="first_name"
-                placeholder="First Name"
-                onChange={(e) => handleInput(e)}
-              />
-              <input
-                className={styles.input}
-                name="last_name"
-                placeholder="Last Name"
-                onChange={(e) => handleInput(e)}
-              />
-              <Select
-                className={styles.select}
-                isSearchable={true}
-                options={majorOptions}
-                instanceId={"searchMajor"}
-                name="major"
-                placeholder="Major"
-                onChange={(e) => handleSelect(e, "major")}
-                menuPortalTarget={isMounted ? document.body : null}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    height: "2.5rem",
-                    border: "1px solid rgba(0,0,0,.1)",
-                  }),
-                }}
-              />
-              <Select
-                className={styles.select}
-                options={pronounOptions}
-                placeholder="Pronouns"
-                instanceId={"pronouns"}
-                name="pronouns"
-                onChange={(e) => handleSelect(e, "pronouns")}
-                menuPortalTarget={isMounted ? document.body : null}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    height: "2.5rem",
-                    border: "1px solid rgba(0,0,0,.1)",
-                  }),
-                }}
-              />
-              <a
-                className={styles.help}
-                href={'mailto:nothing@gmail.com'}
-              >
-                Need help
-              </a>
-            </div>
+                {imageError && <p>{imageError}</p>}
+
+                {formData.profile_picture && (
+                  <ReactCrop
+                    crop={crop}
+                    circularCrop
+                    keepSelection
+                    aspect={ASPECT_RATIO}
+                    minWidth={MIN_DIMENSION}
+                    onChange={(pixelCrop, percentCrop) => setCrop(pixelCrop)}
+                  >
+                    <img
+                      src={formData.profile_picture}
+                      alt="upload"
+                      onLoad={(e) => onImageLoad(e)}
+                    />
+                  </ReactCrop>
+                )}
+              </div>
+            )}
             <div className={styles.btnContainer}>
               <button
+                type="button"
                 onClick={(e) => {
                   e.preventDefault();
-                  SignOut("/signIn");
+                  registrationPage == 1
+                    ? SignOut("/signIn")
+                    : setRegistrationPage(1);
                 }}
               >
                 Back
               </button>
               <button type="submit" className={validForm ? styles.active : ""}>
-                Create
+                {registrationPage == 1
+                  ? "Next"
+                  : formData.profile_picture
+                  ? "Create"
+                  : "Skip"}
               </button>
             </div>
           </form>
