@@ -1,17 +1,19 @@
 import express from "express";
-import db from "./db.js";
 import {
   createUser,
   getUserById,
   getUserByEmail,
 } from "./queries/userQueries.ts";
 import cors from "cors";
+import { generateUploadUrl } from "./s3.js";
 
 const PORT = process.env.PORT ?? 8000;
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 // Route to get user by ID
 app.get("/api/user/:userId", async (req, res) => {
@@ -24,7 +26,7 @@ app.get("/api/user/:userId", async (req, res) => {
     console.error("Error getting user:", error);
     res.status(500);
   }
-}); 
+});
 
 // Route to get user by email
 app.post("/api/user/email", async (req, res) => {
@@ -47,8 +49,24 @@ app.post("/api/user/email", async (req, res) => {
 
 // Route to create a user
 app.post("/api/user", async (req, res) => {
-  const { user_id, email, first_name, last_name, major, pronouns } = req.body;
-  const userInfo = { user_id, email, first_name, last_name, major, pronouns };
+  const {
+    user_id,
+    email,
+    first_name,
+    last_name,
+    profile_picture,
+    major,
+    pronouns,
+  } = req.body;
+  const userInfo = {
+    user_id,
+    email,
+    first_name,
+    last_name,
+    profile_picture,
+    major,
+    pronouns,
+  };
   try {
     const newUser = await createUser(userInfo);
     if (newUser) res.status(200).json(newUser);
@@ -59,4 +77,7 @@ app.post("/api/user", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.get("/s3Url", async (req, res) => {
+  const url = await generateUploadUrl();
+  res.send({ url });
+});

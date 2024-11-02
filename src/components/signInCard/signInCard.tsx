@@ -5,13 +5,7 @@ import signInImage from "../../assets/images/signInImage.png";
 import Logo from "@/components/logo/logo";
 import { SignIn } from "@/app/api/auth/actions";
 import google from "../../assets/icons/google.png";
-import {
-  MutableRefObject,
-  SyntheticEvent,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { SyntheticEvent, use, useEffect, useRef, useState } from "react";
 import Select, { SingleValue } from "react-select";
 import { SignOut } from "@/app/api/auth/actions";
 import { useRouter } from "next/navigation";
@@ -20,7 +14,6 @@ import ReactCrop, {
   convertToPixelCrop,
   Crop,
   makeAspectCrop,
-  PixelCrop,
 } from "react-image-crop";
 import "react-image-crop/src/ReactCrop.scss";
 import Upload from "@/assets/icons/upload";
@@ -74,17 +67,24 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
   const MIN_DIMENSION = 100;
   const [pictureConfirmed, setPictureConfirmed] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
-  const previewCanvasRef = useRef(null);
+  const previewCanvasRef = useRef<HTMLCanvasElement>(null);
   const [tempImg, setTempImg] = useState("");
+  const [blob, setBlob] = useState<File>();
+  const [s3Link, setS3Link] = useState("");
 
   const router = useRouter();
 
-  // POST request to create account
+  // uploads profile picture to s3 then submits form
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (registrationPage == 2) await uploadToS3();
+    else setRegistrationPage(2);
+  }
 
-    if (checkForm()) {
-      if (registrationPage == 2)
+  useEffect(() => {
+    async function trySubmit() {
+      if (checkForm()) {
+        // POST request to create account
         try {
           const response = await fetch("http://localhost:8000/api/user", {
             method: "POST",
@@ -94,7 +94,6 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
           if (!response.ok) {
             console.error("Registration response was not ok");
           }
-          console.log(response);
           if (response?.status == 200) {
             if (await response.json()) router.push("/");
           } else {
@@ -103,11 +102,12 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
         } catch (error) {
           console.error("Error completing registration:", error);
         }
-      else setRegistrationPage(2);
-    } else {
-      setErrorMessage("* Must complete all fields!");
+      } else {
+        setErrorMessage("* Must complete all fields!");
+      }
     }
-  }
+    if (registrationPage == 2) trySubmit();
+  }, [s3Link]);
 
   // Updates formData per key input
   function handleInput(e: React.ChangeEvent<HTMLInputElement>) {
@@ -236,6 +236,53 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
     }
   }
 
+  // upload copped image to s3 bucket
+  async function handleCrop() {
+    if (imgRef.current && crop && previewCanvasRef.current) {
+      setCanvasPreview(
+        imgRef.current,
+        previewCanvasRef.current,
+        convertToPixelCrop(crop, imgRef.current.width, imgRef.current.height)
+      );
+      let uploadFile = await new Promise((resolve, reject) => {
+        previewCanvasRef?.current?.toBlob((blob) => {
+          if (blob) {
+            resolve(
+              new File([blob], "bruin-connect-profile-picture.jpg", {
+                type: "image/jpeg",
+              })
+            );
+          } else {
+            reject(new Error("Failed to crop image"));
+          }
+        }, "image/jpeg");
+      });
+      setBlob(uploadFile as File);
+      setPictureConfirmed(true);
+    }
+  }
+
+  async function uploadToS3() {
+    if (pictureConfirmed && previewCanvasRef.current) {
+      const res = await fetch("http://localhost:8000/s3Url");
+      const { url } = await res.json();
+      const upload = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "image/jpeg", // Ensure the Content-Type matches your file type
+        },
+        body: blob,
+      });
+
+      setFormData((prevState) => ({
+        ...prevState,
+        profile_picture: upload.url.split("?")[0],
+      }));
+
+      setS3Link(upload.url.split("?")[0]);
+    } else setS3Link("null");
+  }
+
   return (
     <div className={styles.container}>
       <Image
@@ -342,6 +389,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                       id="uploadBtn"
                       onChange={uploadFile}
                       hidden
+                      accept="image/*"
                     />
                     <label htmlFor="uploadBtn">
                       <Upload />
@@ -369,35 +417,25 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                       />
                     </ReactCrop>
                     <div>
-                      <button type="button">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setTempImg("");
+                        }}
+                      >
                         <Xmark />
                       </button>
                       <button
                         type="button"
                         onClick={() => {
-                          if (imgRef.current && crop)
-                            setCanvasPreview(
-                              imgRef.current,
-                              previewCanvasRef.current,
-                              convertToPixelCrop(
-                                crop,
-                                imgRef.current.width,
-                                imgRef.current.height
-                              )
-                            );
+                          handleCrop();
                         }}
                       >
                         <Checkmark />
                       </button>
-                      {crop && (
-                        <canvas
-                          ref={previewCanvasRef}
-                          style={{
-                            height: 100,
-                            width: 100,
-                            display: "none",
-                          }}
-                        ></canvas>
+
+                      {formData.profile_picture && (
+                        <img src={formData.profile_picture} />
                       )}
                     </div>
                   </div>
@@ -419,11 +457,21 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
               <button type="submit" className={validForm ? styles.active : ""}>
                 {registrationPage == 1
                   ? "Next"
-                  : formData.profile_picture
+                  : pictureConfirmed
                   ? "Create"
                   : "Skip"}
               </button>
             </div>
+            {crop && (
+              <canvas
+                ref={previewCanvasRef}
+                style={{
+                  height: 100,
+                  width: 100,
+                  display: "none",
+                }}
+              ></canvas>
+            )}
           </form>
         )}
       </div>

@@ -16,6 +16,7 @@ type User = {
   email: String;
   first_name: String;
   last_name: String;
+  profile_picture: String;
   bio: String;
   major: String;
   pronouns: String;
@@ -27,6 +28,7 @@ type User = {
 //   user_id: String;
 //   first_name: String;
 //   last_name: String;
+//   profile_picture;
 //   bio: String;
 //   major: String;
 //   pronouns: String;
@@ -36,7 +38,6 @@ export async function getUserById({ user_id }: User) {
   const values = [user_id];
 
   try {
-
     const result = await db.query(query, values);
     return result.rows[0];
   } catch (error) {
@@ -66,12 +67,20 @@ export async function createUser({
   email,
   first_name,
   last_name,
+  profile_picture,
   major,
   pronouns,
 }: User) {
-
-  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, major, pronouns) VALUES ($1, $2, $3, $4, $5, $6) RETURNING user_id`;
-  const values = [user_id, email, first_name, last_name, major, pronouns];
+  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, profile_picture, major, pronouns) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING user_id`;
+  const values = [
+    user_id,
+    email,
+    first_name,
+    last_name,
+    profile_picture,
+    major,
+    pronouns,
+  ];
   try {
     const result = await db.query(query, values);
     return result.rows[0];
