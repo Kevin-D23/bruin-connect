@@ -30,10 +30,12 @@
   width: 100%;
   margin: 1rem;
   border-radius: 0.625rem;
-  height: 30rem;
-
+  display: flex;
+  min-height: 30rem;
+  max-height: 40rem;
   max-width: 36rem;
   transition: all 0.1s linear;
+
   @media screen and (min-width: 960px) {
     display: flex;
     justify-content: space-between;
@@ -48,7 +50,8 @@
 }
 
 .formContainer {
-  height: 100%;
+  flex: 1;
+  min-height: 100%;
   padding: 0 2rem;
   @media screen and (min-width: 960px) {
     width: 50%;
@@ -161,25 +164,41 @@
     width: 100%;
     gap: 1rem;
     margin-bottom: 2rem;
-    h2 {
-      font-size: 1rem;
-      font-weight: 500;
-      text-wrap: nowrap;
-    }
     label {
-      background-color: var(--primary);
-      padding: 0.5rem 1rem;
+      border: 1px dashed rgba(0, 0, 0, 0.3);
+      background-color: var(--primary-bg);
+      width: 100%;
+      height: 15rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       border-radius: 4px;
       font-weight: 600;
       font-size: 0.8rem;
-      color: var(--secondary-bg);
+      color: var(--primary-text);
     }
   }
-  img {
-    max-height: 15rem !important;
-    @media screen and (min-width:960px) {
-      max-height: 25rem !important;
-      
+
+  .cropImgContainer {
+    margin-bottom: 2rem;
+    background-color: var(--secondary-bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    width: 100%;
+    max-width: 20rem;
+
+    button{
+      background-color: transparent;
+      border: none;
+    }
+
+    img {
+      @media screen and (min-width: 960px) {
+        max-height: 25rem !important;
+      }
     }
   }
 }
