@@ -21,6 +21,7 @@ import { majorOptions } from "@/assets/lists/majorOptions";
 import { pronounOptions } from "@/assets/lists/pronouns";
 import Xmark from "@/assets/icons/Xmark";
 import Checkmark from "@/assets/icons/checkmark";
+import ProfileCard from "../profileCard/profileCard";
 
 // formats email to hidden email
 function formatEmail(email: String) {
@@ -78,7 +79,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
     if (registrationPage == 2) await uploadToS3();
-    else setRegistrationPage(2);
+    else if (checkForm()) setRegistrationPage(2);
   }
 
   useEffect(() => {
@@ -382,6 +383,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
             {/* Profile picture registration */}
             {registrationPage == 2 && (
               <div className={styles.imgUpload}>
+                {/* Display image upload button */}
                 {!tempImg && (
                   <div className={styles.imgBtnContainer}>
                     <input
@@ -398,7 +400,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                   </div>
                 )}
                 {imageError && <p>{imageError}</p>}
-
+                {/* Display cropping tool */}
                 {tempImg && !pictureConfirmed && (
                   <div className={styles.cropImgContainer}>
                     <ReactCrop
@@ -433,12 +435,17 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                       >
                         <Checkmark />
                       </button>
-
-                      {formData.profile_picture && (
-                        <img src={formData.profile_picture} />
-                      )}
                     </div>
                   </div>
+                )}
+                {previewCanvasRef.current && blob && (
+                  <ProfileCard
+                    imgLink={previewCanvasRef.current?.toDataURL()}
+                    firstName={formData.first_name}
+                    lastName={formData.last_name}
+                    pronouns={formData.pronouns}
+                    major={formData.major}
+                  />
                 )}
               </div>
             )}

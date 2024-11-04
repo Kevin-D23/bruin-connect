@@ -1,0 +1,37 @@
+.profileCard {
+
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  .textContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+
+    .nameContainer {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+
+      .name {
+        font-weight: 600;
+        font-size: 0.875rem;
+      }
+
+      .pronouns {
+        font-size: 0.75rem;
+        font-weight: 300;
+      }
+    }
+
+    .major {
+      font-size: 0.75rem;
+      font-weight: 300;
+    }
+  }
+  img {
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+  }
+}

@@ -6,15 +6,15 @@ export default function Home() {
       <div className={styles.container}>
         <div
           className={styles.profileContainer}
-          style={{ height: 100, backgroundColor: "red" }}
+          style={{ height: 100, backgroundColor: "black" }}
         ></div>
         <div
           className={styles.feedContainer}
-          style={{ height: 100, backgroundColor: "red" }}
+          style={{ height: 100, backgroundColor: "black" }}
         ></div>
         <div
           className={styles.suggestionsContainer}
-          style={{ height: 100, backgroundColor: "red" }}
+          style={{ height: 100, backgroundColor: "black" }}
         ></div>
       </div>
     </section>
