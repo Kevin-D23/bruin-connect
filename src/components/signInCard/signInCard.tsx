@@ -22,6 +22,7 @@ import { pronounOptions } from "@/assets/lists/pronouns";
 import Xmark from "@/assets/icons/Xmark";
 import Checkmark from "@/assets/icons/checkmark";
 import ProfileCard from "../profileCard/profileCard";
+import DefaultProfile from "../../assets/images/defaultProfile.png";
 
 // formats email to hidden email
 function formatEmail(email: String) {
@@ -439,13 +440,36 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
                   </div>
                 )}
                 {previewCanvasRef.current && blob && (
-                  <ProfileCard
-                    imgLink={previewCanvasRef.current?.toDataURL()}
-                    firstName={formData.first_name}
-                    lastName={formData.last_name}
-                    pronouns={formData.pronouns}
-                    major={formData.major}
-                  />
+                  <div>
+                    <ProfileCard
+                      imgLink={previewCanvasRef.current?.toDataURL()}
+                      firstName={formData.first_name}
+                      lastName={formData.last_name}
+                      pronouns={formData.pronouns}
+                      major={formData.major}
+                    />
+                    <div className={styles.imgConfirmationContainer}>
+                      <button
+                        className={styles.removeImg}
+                        onClick={() => {
+                          setBlob(undefined);
+                          setPictureConfirmed(false);
+                          setTempImg("");
+                        }}
+                      >
+                        Remove
+                      </button>{" "}
+                      <button
+                        className={styles.cropImg}
+                        onClick={() => {
+                          setBlob(undefined);
+                          setPictureConfirmed(false);
+                        }}
+                      >
+                        Crop
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             )}

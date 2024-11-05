@@ -1,10 +1,10 @@
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import styles from "./profileCard.module.scss";
 import { pronounOptions } from "@/assets/lists/pronouns";
 import { majorOptions } from "@/assets/lists/majorOptions";
 
 type ProfileCard = {
-  imgLink: string;
+  imgLink: string | StaticImageData;
   firstName: string;
   lastName: string;
   pronouns: string;
