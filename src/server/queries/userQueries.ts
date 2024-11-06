@@ -51,7 +51,7 @@ export async function getUserById({ user_id }: User) {
 //   user_id: String;
 // }
 export async function getUserByEmail({ email }: User) {
-  const query = `SELECT user_id, first_name, last_name, profile_picture, bio, major, pronouns FROM "user" WHERE email = ($1)`;
+  const query = `SELECT user_id FROM "user" WHERE email = ($1)`;
   const values = [email];
   try {
     const result = await db.query(query, values);
