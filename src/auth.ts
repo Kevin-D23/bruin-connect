@@ -69,7 +69,7 @@ export const {
         console.error("SignIn: User does not exist");
       }
 
-      if (result.user_id) {
+      if (result?.user_id) {
         session.user.bio = result.bio;
         session.user.image = result.profile_picture;
         session.user.major = result.major;
