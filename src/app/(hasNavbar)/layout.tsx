@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "../globals.scss";
 import Navbar from "@/components/navbar/navbar";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 import MobileTopBar from "@/components/mobileTopBar/mobileTopBar";
 import MobileNavbar from "@/components/mobileNavbar/mobileNavbar";
+import { SessionProvider } from "./sessionProvider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -24,10 +24,12 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Navbar />
-        <MobileTopBar />
-        {children}
-        <MobileNavbar />
+        <SessionProvider session={session}>
+          <Navbar />
+          <MobileTopBar />
+          {children}
+          <MobileNavbar />
+        </SessionProvider>
       </body>
     </html>
   );

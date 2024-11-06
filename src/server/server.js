@@ -55,6 +55,7 @@ app.post("/api/user", async (req, res) => {
     first_name,
     last_name,
     profile_picture,
+    bio,
     major,
     pronouns,
   } = req.body;
@@ -64,6 +65,7 @@ app.post("/api/user", async (req, res) => {
     first_name,
     last_name,
     profile_picture,
+    bio,
     major,
     pronouns,
   };

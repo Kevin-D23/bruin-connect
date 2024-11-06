@@ -1,13 +1,16 @@
+"use client"
 import Image from "next/image";
 import Search from "../../assets/icons/search.svg";
 import Logo from "../logo/logo";
 import DefaultProfile from "../../assets/images/defaultProfile.png";
 import styles from "./mobileTopBar.module.scss";
-import { auth } from "@/auth";
 import Link from "next/link";
+import { useSession } from "@/app/(hasNavbar)/sessionProvider";
 
-export default async function MobileTopBar() {
-  const session = await auth();
+
+export default function MobileTopBar() {
+  const session = useSession()
+
   const userId = session?.user?.id;
   return (
     <div className={styles.container}>

@@ -1,14 +1,16 @@
+"use client";
 import Logo from "../logo/logo";
 import Search from "../../assets/icons/search.svg";
 import defaultProfile from "../../assets/images/defaultProfile.png";
 import Image from "next/image";
 import Link from "next/link";
 import styles from "./navbar.module.scss";
-import { auth } from "@/auth";
 import NavBtns from "./navbtns";
+import { useSession } from "@/app/(hasNavbar)/sessionProvider";
 
-export default async function Navbar() {
-  const session = await auth();
+export default function Navbar() {
+  const session = useSession();
+
   const userId = session?.user?.id;
   return (
     <nav className={styles.navbar}>

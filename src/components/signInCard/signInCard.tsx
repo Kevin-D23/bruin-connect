@@ -57,6 +57,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
     major: "",
     pronouns: "",
     profile_picture: "",
+    bio: "",
   });
   const [validForm, setValidForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");

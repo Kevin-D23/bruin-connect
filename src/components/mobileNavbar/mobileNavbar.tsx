@@ -14,23 +14,48 @@ export default function MobileNavbar() {
 
   return (
     <nav className={styles.mobileNavbar}>
-      <Link href={"/home"} className={`${styles.navOption} ${pathname == '/home' ? styles.active : ''}`}>
+      <Link
+        href={"/home"}
+        className={`${styles.navOption} ${
+          pathname == "/home" ? styles.active : ""
+        }`}
+      >
         <Home />
         <p>Home</p>
       </Link>
-      <Link href={"/clubs"} className={`${styles.navOption} ${pathname == '/clubs' ? styles.active : ''}`}>
+      <Link
+        href={"/clubs"}
+        className={`${styles.navOption} ${
+          pathname == "/clubs" ? styles.active : ""
+        }`}
+      >
         <Clubs />
         <p>Clubs</p>
       </Link>
-      <Link href={"/post"} className={`${styles.navOption} ${pathname == '/post' ? styles.active : ''}`}>
+      <Link
+        href={"/post"}
+        className={`${styles.navOption} ${
+          pathname == "/post" ? styles.active : ""
+        }`}
+      >
         <Post />
         <p>Post</p>
       </Link>
-      <Link href={"friends"} className={`${styles.navOption} ${pathname == '/friends' ? styles.active : ''}`}>
+      <Link
+        href={"friends"}
+        className={`${styles.navOption} ${
+          pathname == "/friends" ? styles.active : ""
+        }`}
+      >
         <Friends />
         <p>Friends</p>
       </Link>
-      <Link href={"messages"} className={`${styles.navOption} ${pathname == '/messages' ? styles.active : ''}`}>
+      <Link
+        href={"messages"}
+        className={`${styles.navOption} ${
+          pathname == "/messages" ? styles.active : ""
+        }`}
+      >
         <Messages />
         <p>Messages</p>
       </Link>

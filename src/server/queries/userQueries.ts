@@ -51,7 +51,7 @@ export async function getUserById({ user_id }: User) {
 //   user_id: String;
 // }
 export async function getUserByEmail({ email }: User) {
-  const query = `SELECT user_id FROM "user" WHERE email = ($1)`;
+  const query = `SELECT user_id, first_name, last_name, profile_picture, bio, major, pronouns FROM "user" WHERE email = ($1)`;
   const values = [email];
   try {
     const result = await db.query(query, values);
@@ -68,16 +68,18 @@ export async function createUser({
   first_name,
   last_name,
   profile_picture,
+  bio,
   major,
   pronouns,
 }: User) {
-  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, profile_picture, major, pronouns) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING user_id`;
+  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, profile_picture, bio, major, pronouns) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING user_id`;
   const values = [
     user_id,
     email,
     first_name,
     last_name,
     profile_picture,
+    bio,
     major,
     pronouns,
   ];
