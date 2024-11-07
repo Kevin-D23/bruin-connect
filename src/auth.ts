@@ -54,29 +54,6 @@ export const {
     },
     async session({ session, token }) {
       session.user.id = token.id as string;
-      let result;
-
-      try {
-        const response = await fetch(
-          `http://localhost:8000/api/user/${session.user.id}`
-        );
-
-        if (!response.ok) {
-          console.error("Network response was not ok");
-        }
-        result = await response.json();
-      } catch (error) {
-        console.error("SignIn: User does not exist");
-      }
-
-      if (result?.user_id) {
-        session.user.bio = result.bio;
-        session.user.image = result.profile_picture;
-        session.user.major = result.major;
-        session.user.pronouns = result.pronouns;
-        session.user.name = result.first_name + " " + result.last_name;
-      }
-      
       return session;
     },
   },

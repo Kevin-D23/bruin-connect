@@ -18,13 +18,30 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const session = await auth();
+
+  let result;
+  if (session?.user)
+    try {
+      const response = await fetch(
+        `http://localhost:8000/api/user/${session.user.id}`
+      );
+      if (!response.ok) {
+        console.error("Network response was not ok");
+      }
+      result = await response.json();
+    } catch (error) {
+      console.error("SignIn: User does not exist");
+    }
+
+let userSession = result
+
   if (!session) {
     redirect("/");
   }
   return (
     <html lang="en">
       <body>
-        <SessionProvider session={session}>
+        <SessionProvider user={userSession}>
           <Navbar />
           <MobileTopBar />
           {children}

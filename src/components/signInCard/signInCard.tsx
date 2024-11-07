@@ -22,7 +22,6 @@ import { pronounOptions } from "@/assets/lists/pronouns";
 import Xmark from "@/assets/icons/Xmark";
 import Checkmark from "@/assets/icons/checkmark";
 import ProfileCard from "../profileCard/profileCard";
-import DefaultProfile from "../../assets/images/defaultProfile.png";
 
 // formats email to hidden email
 function formatEmail(email: String) {

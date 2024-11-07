@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import Image from "next/image";
 import Search from "../../assets/icons/search.svg";
 import Logo from "../logo/logo";
@@ -7,11 +7,10 @@ import styles from "./mobileTopBar.module.scss";
 import Link from "next/link";
 import { useSession } from "@/app/(hasNavbar)/sessionProvider";
 
-
 export default function MobileTopBar() {
-  const session = useSession()
+  const session = useSession();
 
-  const userId = session?.user?.id;
+  const userId = session?.user_id;
   return (
     <div className={styles.container}>
       <Link href={"/search"} className={styles.searchContainer}>

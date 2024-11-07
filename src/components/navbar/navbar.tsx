@@ -11,7 +11,7 @@ import { useSession } from "@/app/(hasNavbar)/sessionProvider";
 export default function Navbar() {
   const session = useSession();
 
-  const userId = session?.user?.id;
+  const userId = session?.user_id
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
