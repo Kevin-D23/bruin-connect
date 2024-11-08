@@ -4,6 +4,7 @@
 // 	first_name VARCHAR(100) NOT NULL,
 // 	last_name VARCHAR(100) NOT NULL,
 // 	profile_picture VARCHAR(255),
+//  private BOOL NOT NULL,
 // 	bio TEXT,
 // 	major VARCHAR(50),
 // 	created_at TIMESTAMP DEFAULT NOW()
@@ -32,6 +33,7 @@ type User = {
 //   bio: String;
 //   major: String;
 //   pronouns: String;
+//   private: Bool
 // }
 export async function getUserById({ user_id }: User) {
   const query = `SELECT user_id, first_name, last_name, profile_picture, bio, major, pronouns FROM "user" WHERE user_id = ($1)`;
@@ -72,7 +74,7 @@ export async function createUser({
   major,
   pronouns,
 }: User) {
-  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, profile_picture, bio, major, pronouns) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING user_id`;
+  const query = `INSERT INTO "user" (user_id, email, first_name, last_name, profile_picture, bio, major, pronouns, private) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, false) RETURNING user_id`;
   const values = [
     user_id,
     email,
