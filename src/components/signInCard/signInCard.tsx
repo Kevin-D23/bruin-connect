@@ -22,6 +22,8 @@ import { pronounOptions } from "@/assets/lists/pronouns";
 import Xmark from "@/assets/icons/Xmark";
 import Checkmark from "@/assets/icons/checkmark";
 import ProfileCard from "../profileCard/profileCard";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 // formats email to hidden email
 function formatEmail(email: String) {
@@ -61,6 +63,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
   const [validForm, setValidForm] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [registrationPage, setRegistrationPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
 
   // image variables
   const [crop, setCrop] = useState<Crop>();
@@ -85,6 +88,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
 
   useEffect(() => {
     async function trySubmit() {
+      setIsLoading(true);
       if (checkForm()) {
         // POST request to create account
         try {
@@ -102,6 +106,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
             setErrorMessage("** Error creating account");
           }
         } catch (error) {
+          setIsLoading(false)
           console.error("Error completing registration:", error);
         }
       } else {
@@ -150,6 +155,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
 
   useEffect(() => {
     setIsMounted(true);
+    setIsLoading(false);
   }, []);
 
   // set imageURL on upload
@@ -297,213 +303,236 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
       <div className={styles.formContainer}>
         <Logo className={styles.logo} />
         {/* Google Sign in  */}
-        {pageName == "signIn" && (
-          <div className={styles.btnContainer}>
-            <button className={styles.googleBtn} onClick={() => SignIn()}>
-              <Image src={google} width={30} height={30} alt="google" />
-              Sign in with Google
-            </button>
-          </div>
-        )}
-        {/* User data registration */}
-        {pageName == "register" && (
-          <form onSubmit={handleSubmit} className={styles.form}>
-            {registrationPage == 1 && (
-              <div>
-                {errorMessage && (
-                  <div className={styles.error}>
-                    <p>{errorMessage}</p>
-                  </div>
-                )}
-                <input
-                  className={styles.input}
-                  name="first_name"
-                  placeholder="First Name"
-                  value={formData.first_name}
-                  onChange={(e) => handleInput(e)}
-                />
-                <input
-                  className={styles.input}
-                  name="last_name"
-                  placeholder="Last Name"
-                  value={formData.last_name}
-                  onChange={(e) => handleInput(e)}
-                />
-                <Select
-                  className={styles.select}
-                  isSearchable={true}
-                  options={majorOptions}
-                  instanceId={"searchMajor"}
-                  value={
-                    majorOptions[
-                      majorOptions.findIndex(
-                        (major) => major.value === formData.major
-                      )
-                    ]
-                  }
-                  name="major"
-                  placeholder="Major"
-                  onChange={(e) => handleSelect(e, "major")}
-                  menuPortalTarget={isMounted ? document.body : null}
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      height: "2.5rem",
-                      border: "1px solid rgba(0,0,0,.1)",
-                    }),
-                  }}
-                />
-                <Select
-                  className={styles.select}
-                  options={pronounOptions}
-                  placeholder="Pronouns"
-                  instanceId={"pronouns"}
-                  name="pronouns"
-                  value={
-                    pronounOptions[
-                      pronounOptions.findIndex(
-                        (pronoun) => pronoun.value === formData.pronouns
-                      )
-                    ]
-                  }
-                  onChange={(e) => handleSelect(e, "pronouns")}
-                  menuPortalTarget={isMounted ? document.body : null}
-                  styles={{
-                    control: (base) => ({
-                      ...base,
-                      height: "2.5rem",
-                      border: "1px solid rgba(0,0,0,.1)",
-                    }),
-                  }}
-                />
-                <a className={styles.help} href={"mailto:nothing@gmail.com"}>
-                  Need help
-                </a>
+        {isLoading ? (
+          <Box
+            sx={{
+              display: "flex",
+              height: "100%",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <CircularProgress />
+          </Box>
+        ) : (
+          <>
+            {pageName == "signIn" && (
+              <div className={styles.btnContainer}>
+                <button className={styles.googleBtn} onClick={() => SignIn()}>
+                  <Image src={google} width={30} height={30} alt="google" />
+                  Sign in with Google
+                </button>
               </div>
             )}
-            {/* Profile picture registration */}
-            {registrationPage == 2 && (
-              <div className={styles.imgUpload}>
-                {/* Display image upload button */}
-                {!tempImg && (
-                  <div className={styles.imgBtnContainer}>
-                    <input
-                      type="file"
-                      id="uploadBtn"
-                      onChange={uploadFile}
-                      hidden
-                      accept="image/*"
-                    />
-                    <label htmlFor="uploadBtn">
-                      <Upload />
-                      Profile Picture
-                    </label>
-                  </div>
-                )}
-                {imageError && <p>{imageError}</p>}
-                {/* Display cropping tool */}
-                {tempImg && !pictureConfirmed && (
-                  <div className={styles.cropImgContainer}>
-                    <ReactCrop
-                      crop={crop}
-                      circularCrop
-                      keepSelection
-                      aspect={ASPECT_RATIO}
-                      minWidth={MIN_DIMENSION}
-                      onChange={(pixelCrop, percentCrop) => setCrop(pixelCrop)}
-                    >
-                      <img
-                        src={tempImg}
-                        alt="upload"
-                        onLoad={(e) => onImageLoad(e)}
-                        ref={imgRef}
-                      />
-                    </ReactCrop>
-                    <div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setTempImg("");
-                        }}
-                      >
-                        <Xmark />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleCrop();
-                        }}
-                      >
-                        <Checkmark />
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {previewCanvasRef.current && blob && (
+            {/* User data registration */}
+            {pageName == "register" && (
+              <form onSubmit={handleSubmit} className={styles.form}>
+                {registrationPage == 1 && (
                   <div>
-                    <ProfileCard
-                      imgLink={previewCanvasRef.current?.toDataURL()}
-                      firstName={formData.first_name}
-                      lastName={formData.last_name}
-                      pronouns={formData.pronouns}
-                      major={formData.major}
+                    {errorMessage && (
+                      <div className={styles.error}>
+                        <p>{errorMessage}</p>
+                      </div>
+                    )}
+                    <input
+                      className={styles.input}
+                      name="first_name"
+                      placeholder="First Name"
+                      value={formData.first_name}
+                      onChange={(e) => handleInput(e)}
                     />
-                    <div className={styles.imgConfirmationContainer}>
-                      <button
-                        className={styles.removeImg}
-                        onClick={() => {
-                          setBlob(undefined);
-                          setPictureConfirmed(false);
-                          setTempImg("");
-                        }}
-                      >
-                        Remove
-                      </button>{" "}
-                      <button
-                        className={styles.cropImg}
-                        onClick={() => {
-                          setBlob(undefined);
-                          setPictureConfirmed(false);
-                        }}
-                      >
-                        Crop
-                      </button>
-                    </div>
+                    <input
+                      className={styles.input}
+                      name="last_name"
+                      placeholder="Last Name"
+                      value={formData.last_name}
+                      onChange={(e) => handleInput(e)}
+                    />
+                    <Select
+                      className={styles.select}
+                      isSearchable={true}
+                      options={majorOptions}
+                      instanceId={"searchMajor"}
+                      value={
+                        majorOptions[
+                          majorOptions.findIndex(
+                            (major) => major.value === formData.major
+                          )
+                        ]
+                      }
+                      name="major"
+                      placeholder="Major"
+                      onChange={(e) => handleSelect(e, "major")}
+                      menuPortalTarget={isMounted ? document.body : null}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          height: "2.5rem",
+                          border: "1px solid rgba(0,0,0,.1)",
+                        }),
+                      }}
+                    />
+                    <Select
+                      className={styles.select}
+                      options={pronounOptions}
+                      placeholder="Pronouns"
+                      instanceId={"pronouns"}
+                      name="pronouns"
+                      value={
+                        pronounOptions[
+                          pronounOptions.findIndex(
+                            (pronoun) => pronoun.value === formData.pronouns
+                          )
+                        ]
+                      }
+                      onChange={(e) => handleSelect(e, "pronouns")}
+                      menuPortalTarget={isMounted ? document.body : null}
+                      styles={{
+                        control: (base) => ({
+                          ...base,
+                          height: "2.5rem",
+                          border: "1px solid rgba(0,0,0,.1)",
+                        }),
+                      }}
+                    />
+                    <a
+                      className={styles.help}
+                      href={"mailto:nothing@gmail.com"}
+                    >
+                      Need help
+                    </a>
                   </div>
                 )}
-              </div>
+                {/* Profile picture registration */}
+                {registrationPage == 2 && (
+                  <div className={styles.imgUpload}>
+                    {/* Display image upload button */}
+                    {!tempImg && (
+                      <div className={styles.imgBtnContainer}>
+                        <input
+                          type="file"
+                          id="uploadBtn"
+                          onChange={uploadFile}
+                          hidden
+                          accept="image/*"
+                        />
+                        <label htmlFor="uploadBtn">
+                          <Upload />
+                          Profile Picture
+                        </label>
+                      </div>
+                    )}
+                    {imageError && <p>{imageError}</p>}
+                    {/* Display cropping tool */}
+                    {tempImg && !pictureConfirmed && (
+                      <div className={styles.cropImgContainer}>
+                        <ReactCrop
+                          crop={crop}
+                          circularCrop
+                          keepSelection
+                          aspect={ASPECT_RATIO}
+                          minWidth={MIN_DIMENSION}
+                          onChange={(pixelCrop, percentCrop) =>
+                            setCrop(pixelCrop)
+                          }
+                        >
+                          <img
+                            src={tempImg}
+                            alt="upload"
+                            onLoad={(e) => onImageLoad(e)}
+                            ref={imgRef}
+                          />
+                        </ReactCrop>
+                        <div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setTempImg("");
+                            }}
+                          >
+                            <Xmark />
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              handleCrop();
+                            }}
+                          >
+                            <Checkmark />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                    {previewCanvasRef.current && blob && (
+                      <div>
+                        <ProfileCard
+                          imgLink={previewCanvasRef.current?.toDataURL()}
+                          firstName={formData.first_name}
+                          lastName={formData.last_name}
+                          pronouns={formData.pronouns}
+                          major={formData.major}
+                        />
+                        <div className={styles.imgConfirmationContainer}>
+                          <button
+                            className={styles.removeImg}
+                            onClick={() => {
+                              setBlob(undefined);
+                              setPictureConfirmed(false);
+                              setTempImg("");
+                            }}
+                          >
+                            Remove
+                          </button>{" "}
+                          <button
+                            className={styles.cropImg}
+                            onClick={() => {
+                              setBlob(undefined);
+                              setPictureConfirmed(false);
+                            }}
+                          >
+                            Crop
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                <div className={styles.btnContainer}>
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      registrationPage == 1
+                        ? SignOut("/signIn")
+                        : setRegistrationPage(1);
+                    }}
+                  >
+                    Back
+                  </button>
+                  <button
+                    type="submit"
+                    className={validForm ? styles.active : ""}
+                  >
+                    {registrationPage == 1
+                      ? "Next"
+                      : pictureConfirmed
+                      ? "Create"
+                      : "Skip"}
+                  </button>
+                </div>
+                {crop && (
+                  <canvas
+                    ref={previewCanvasRef}
+                    style={{
+                      height: 100,
+                      width: 100,
+                      display: "none",
+                    }}
+                  ></canvas>
+                )}
+              </form>
             )}
-            <div className={styles.btnContainer}>
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  registrationPage == 1
-                    ? SignOut("/signIn")
-                    : setRegistrationPage(1);
-                }}
-              >
-                Back
-              </button>
-              <button type="submit" className={validForm ? styles.active : ""}>
-                {registrationPage == 1
-                  ? "Next"
-                  : pictureConfirmed
-                  ? "Create"
-                  : "Skip"}
-              </button>
-            </div>
-            {crop && (
-              <canvas
-                ref={previewCanvasRef}
-                style={{
-                  height: 100,
-                  width: 100,
-                  display: "none",
-                }}
-              ></canvas>
-            )}
-          </form>
+          </>
         )}
       </div>
     </div>
