@@ -29,11 +29,13 @@ export default async function RootLayout({
         console.error("Network response was not ok");
       }
       result = await response.json();
+
     } catch (error) {
       console.error("SignIn: User does not exist");
     }
-
-let userSession = result
+  let userSession;
+  if (result) userSession = result;
+  else redirect("/");
 
   if (!session) {
     redirect("/");

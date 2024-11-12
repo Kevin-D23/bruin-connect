@@ -4,6 +4,7 @@ import { auth } from "@/auth";
 import { redirect } from "next/navigation";
 
 export default async function SignIn() {
+
   const session = await auth();
   const userId = session?.user?.id;
   let redirectPath: string | null = null;
