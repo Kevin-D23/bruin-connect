@@ -25,18 +25,6 @@ import ProfileCard from "../profileCard/profileCard";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-// formats email to hidden email
-function formatEmail(email: String) {
-  // Split the email into username and domain
-  const [username, domain] = email?.split("@");
-
-  // Replace characters in the username with asterisks
-  const formattedUsername = username.slice(0, 3) + "****";
-
-  // Return the formatted email
-  return `${formattedUsername}@${domain}`;
-}
-
 type PageProps = {
   pageName: String;
   userId?: String;
@@ -106,7 +94,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
             setErrorMessage("** Error creating account");
           }
         } catch (error) {
-          setIsLoading(false)
+          setIsLoading(false);
           console.error("Error completing registration:", error);
         }
       } else {
@@ -201,48 +189,7 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
     setCrop(centeredCrop);
   }
 
-  // draws new canvas for cropped image
-  function setCanvasPreview(
-    image: HTMLImageElement | null,
-    canvas: HTMLCanvasElement | null,
-    crop: any
-  ) {
-    if (canvas && image) {
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        throw new Error("No 2d context");
-      }
-
-      const pixelRatio = window.devicePixelRatio;
-      const scaleX = image.naturalWidth / image.width;
-      const scaleY = image.naturalHeight / image.height;
-
-      canvas.width = Math.floor(crop.width * scaleX * pixelRatio);
-      canvas.height = Math.floor(crop.height * scaleY * pixelRatio);
-
-      ctx.scale(pixelRatio, pixelRatio);
-      ctx.imageSmoothingQuality = "high";
-      ctx.save();
-
-      const cropX = crop.x * scaleX;
-      const cropY = crop.y * scaleY;
-
-      ctx.translate(-cropX, -cropY);
-      ctx.drawImage(
-        image,
-        0,
-        0,
-        image.naturalWidth,
-        image.naturalHeight,
-        0,
-        0,
-        image.naturalWidth,
-        image.naturalHeight
-      );
-
-      ctx.restore();
-    }
-  }
+  
 
   // upload copped image to s3 bucket
   async function handleCrop() {
@@ -537,4 +484,47 @@ export default function SignInCard({ pageName, userId, email }: PageProps) {
       </div>
     </div>
   );
+}
+
+// draws new canvas for cropped image
+function setCanvasPreview(
+  image: HTMLImageElement | null,
+  canvas: HTMLCanvasElement | null,
+  crop: any
+) {
+  if (canvas && image) {
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      throw new Error("No 2d context");
+    }
+
+    const pixelRatio = window.devicePixelRatio;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    canvas.width = Math.floor(crop.width * scaleX * pixelRatio);
+    canvas.height = Math.floor(crop.height * scaleY * pixelRatio);
+
+    ctx.scale(pixelRatio, pixelRatio);
+    ctx.imageSmoothingQuality = "high";
+    ctx.save();
+
+    const cropX = crop.x * scaleX;
+    const cropY = crop.y * scaleY;
+
+    ctx.translate(-cropX, -cropY);
+    ctx.drawImage(
+      image,
+      0,
+      0,
+      image.naturalWidth,
+      image.naturalHeight,
+      0,
+      0,
+      image.naturalWidth,
+      image.naturalHeight
+    );
+
+    ctx.restore();
+  }
 }

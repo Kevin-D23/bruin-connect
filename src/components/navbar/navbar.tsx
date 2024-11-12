@@ -10,8 +10,8 @@ import { useSession } from "@/app/(hasNavbar)/sessionProvider";
 
 export default function Navbar() {
   const session = useSession();
-
-  const userId = session?.user_id
+  const profilePicture = session?.profile_picture;
+  const userId = session?.user_id;
   return (
     <nav className={styles.navbar}>
       <div className={styles.container}>
@@ -31,11 +31,12 @@ export default function Navbar() {
           </Link>
           <Link className={styles.profile} href={`/profile/${userId}`}>
             <Image
-              src={defaultProfile}
+              src={profilePicture ? (profilePicture as string) : defaultProfile}
               width={0}
               height={0}
               alt="profile"
               className={styles.profileImg}
+              unoptimized
             />
           </Link>
         </div>

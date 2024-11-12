@@ -9,7 +9,7 @@ import { useSession } from "@/app/(hasNavbar)/sessionProvider";
 
 export default function MobileTopBar() {
   const session = useSession();
-
+  const profilePicture = session?.profile_picture;
   const userId = session?.user_id;
   return (
     <div className={styles.container}>
@@ -27,10 +27,11 @@ export default function MobileTopBar() {
       </Link>
       <Link href={`/profile/${userId}`} className={styles.profile}>
         <Image
-          src={DefaultProfile}
+          src={profilePicture ? (profilePicture as string) : DefaultProfile}
           width={0}
           height={0}
           alt="profile"
+          unoptimized
           className={styles.profileImg}
         />
       </Link>
