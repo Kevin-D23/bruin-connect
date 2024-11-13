@@ -1,6 +1,6 @@
 "use client";
 import { RegisterContext, RegisterContextType } from "./page";
-import React, { SyntheticEvent, useEffect, useRef, useState, useContext } from "react";
+import { SyntheticEvent, useEffect, useRef, useState, useContext } from "react";
 import Select, { SingleValue, StylesConfig } from "react-select";
 import { SignOut } from "@/app/api/auth/actions";
 import { useRouter } from "next/navigation";
@@ -172,9 +172,9 @@ export default function RegisterContent() {
       imageElement.src = imgUrl;
 
       // on image load, check if image meets dimension requirements
-      imageElement.addEventListener("load", (e: React.SyntheticEvent<HTMLImageElement>) => {
+      imageElement.addEventListener("load", (e: Event) => {
         if (imageError) setImageError("");
-        const { naturalWidth, naturalHeight } = e.currentTarget;
+        const { naturalWidth, naturalHeight } = e.currentTarget as HTMLImageElement;
         if (naturalHeight < MIN_DIMENSION || naturalWidth < MIN_DIMENSION) {
           setImageError("** Image must be at least 150x150 pixels");
           return setTempImg("");
@@ -506,6 +506,6 @@ const selectStyles: StylesConfig<OptionType, false> = {
   }),
   option: (base, { isFocused }) => ({
     ...base,
-    backgroundColor: isFocused ? "var(--primary)" : undefined,
+    backgroundColor: isFocused ? "var(--secondary)" : undefined,
   }),
 };
