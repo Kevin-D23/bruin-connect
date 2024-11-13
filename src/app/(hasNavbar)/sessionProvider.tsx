@@ -1,7 +1,6 @@
 // app/context/UserContext.tsx
 "use client";
-import { createContext, useContext, useState } from "react";
-import { Session } from "next-auth";
+import { createContext, useContext, } from "react";
 import { ReactNode } from "react";
 
 export interface UserProp {

@@ -1,21 +1,47 @@
+"use client";
 import styles from "./register.module.scss";
 import SignInCard from "@/components/signInCard/signInCard";
-import { auth } from "@/auth";
-import { redirect } from "next/navigation";
+import RegisterContent from "./registerContent";
+import { createContext, useState } from "react";
+import { SessionProvider } from "next-auth/react";
 
-export default async function Regsiter() {
-  const session = await auth();
-  const userId = session?.user?.id;
-  const email = session?.user?.email;
-  if (!session) {
-    redirect('/signIn')
-  }
+interface FormDataType {
+  user_id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  major: string;
+  pronouns: string;
+  profile_picture: string;
+  bio: string;
+}
+
+export interface RegisterContextType {
+  formData: FormDataType;
+  setFormData: React.Dispatch<React.SetStateAction<FormDataType>>;
+}
+
+export const RegisterContext = createContext<RegisterContextType | null>(null);
+
+export default function Regsiter() {
+  const [formData, setFormData] = useState<FormDataType>({
+    user_id: "",
+    email: "",
+    first_name: "",
+    last_name: "",
+    major: "",
+    pronouns: "",
+    profile_picture: "",
+    bio: "",
+  });
 
   return (
-    <div>
-      <main className={styles.main}>
-        <SignInCard pageName={"register"} userId={userId} email={email} />
-      </main>
-    </div>
+    <SessionProvider>
+      <RegisterContext.Provider value={{ formData, setFormData }}>
+        <main className={styles.main}>
+          <SignInCard  children={<RegisterContent />} />
+        </main>
+      </RegisterContext.Provider>
+    </SessionProvider>
   );
 }

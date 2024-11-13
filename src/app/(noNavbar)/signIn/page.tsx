@@ -2,9 +2,9 @@ import SignInCard from "@/components/signInCard/signInCard";
 import styles from "./signIn.module.scss";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
+import SignInContent from "./signInContent";
 
 export default async function SignIn() {
-
   const session = await auth();
   const userId = session?.user?.id;
   let redirectPath: string | null = null;
@@ -29,7 +29,7 @@ export default async function SignIn() {
   return (
     <div>
       <main className={styles.main}>
-        <SignInCard pageName="signIn" />
+        <SignInCard children={<SignInContent />} />
       </main>
     </div>
   );
