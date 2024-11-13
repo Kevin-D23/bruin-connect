@@ -1,7 +1,7 @@
 "use client";
 import { RegisterContext, RegisterContextType } from "./page";
-import { SyntheticEvent, useEffect, useRef, useState, useContext } from "react";
-import Select, { SingleValue } from "react-select";
+import React, { SyntheticEvent, useEffect, useRef, useState, useContext } from "react";
+import Select, { SingleValue, StylesConfig } from "react-select";
 import { SignOut } from "@/app/api/auth/actions";
 import { useRouter } from "next/navigation";
 import Upload from "@/assets/icons/upload";
@@ -22,6 +22,7 @@ import ReactCrop, {
 
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+
 
 type OptionType = {
   value: string;
@@ -63,7 +64,6 @@ export default function RegisterContent() {
     else if (checkForm()) setRegistrationPage(2);
     else setErrorMessage("* Must complete all fields!");
   }
-
 
   async function uploadToS3() {
     if (pictureConfirmed && previewCanvasRef.current) {
@@ -172,7 +172,7 @@ export default function RegisterContent() {
       imageElement.src = imgUrl;
 
       // on image load, check if image meets dimension requirements
-      imageElement.addEventListener("load", (e: any) => {
+      imageElement.addEventListener("load", (e: React.SyntheticEvent<HTMLImageElement>) => {
         if (imageError) setImageError("");
         const { naturalWidth, naturalHeight } = e.currentTarget;
         if (naturalHeight < MIN_DIMENSION || naturalWidth < MIN_DIMENSION) {
@@ -228,7 +228,6 @@ export default function RegisterContent() {
       setPictureConfirmed(true);
     }
   }
-
 
   return (
     <>
@@ -439,7 +438,7 @@ export default function RegisterContent() {
 function setCanvasPreview(
   image: HTMLImageElement | null,
   canvas: HTMLCanvasElement | null,
-  crop: any
+  crop: Crop
 ) {
   if (canvas && image) {
     const ctx = canvas.getContext("2d");
@@ -478,39 +477,35 @@ function setCanvasPreview(
   }
 }
 
-
-const selectStyles = {
-	control: (base: any) => ({
-	  ...base,
-	  height: "2.5rem",
-	  border: "1px solid rgba(0,0,0,.1)",
-	  backgroundColor: "var(--primary-bg)",
-	  color: "var(--primary-text)",
-	  fontSize: "0.875rem",
-	  fontWeight: "400",
-	}),
-	menuList: (base: any) => ({
-	  ...base,
-	  color: "var(--primary-text)",
-	  backgroundColor: "var(--primary-bg)",
-	  fontSize: "0.875rem",
-	}),
-	placeholder: (base: any) => ({
-	  ...base,
-	  color: "#868585",
-	  fontWeight: "400",
-	  fontSize: "0.875rem",
-	}),
-	singleValue: (base: any) => ({
-	  ...base,
-	  color: "var(--primary-text)",
-	  fontSize: "0.875rem",
-	}),
-	option: (styles: any, { isFocused }: any) => {
-	  // const color = chroma(data.color);
-	  return {
-		...styles,
-		backgroundColor: isFocused ? "var(--primary)" : null,
-	  };
-	},
-  };
+const selectStyles: StylesConfig<OptionType, false> = {
+  control: (base) => ({
+    ...base,
+    height: "2.5rem",
+    border: "1px solid rgba(0,0,0,.1)",
+    backgroundColor: "var(--primary-bg)",
+    color: "var(--primary-text)",
+    fontSize: "0.875rem",
+    fontWeight: "400",
+  }),
+  menuList: (base) => ({
+    ...base,
+    color: "var(--primary-text)",
+    backgroundColor: "var(--primary-bg)",
+    fontSize: "0.875rem",
+  }),
+  placeholder: (base) => ({
+    ...base,
+    color: "#868585",
+    fontWeight: "400",
+    fontSize: "0.875rem",
+  }),
+  singleValue: (base) => ({
+    ...base,
+    color: "var(--primary-text)",
+    fontSize: "0.875rem",
+  }),
+  option: (base, { isFocused }) => ({
+    ...base,
+    backgroundColor: isFocused ? "var(--primary)" : undefined,
+  }),
+};
