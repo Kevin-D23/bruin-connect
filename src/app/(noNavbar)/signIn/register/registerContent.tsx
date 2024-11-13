@@ -29,6 +29,42 @@ type OptionType = {
   label: string;
 };
 
+const selectStyles = {
+  control: (base: any) => ({
+    ...base,
+    height: "2.5rem",
+    border: "1px solid rgba(0,0,0,.1)",
+    backgroundColor: "var(--primary-bg)",
+    color: "var(--primary-text)",
+    fontSize: "0.875rem",
+    fontWeight: "400",
+  }),
+  menuList: (base: any) => ({
+    ...base,
+    color: "var(--primary-text)",
+    backgroundColor: "var(--primary-bg)",
+    fontSize: "0.875rem"
+  }),
+  placeholder: (base: any) => ({
+    ...base,
+    color: "#868585",
+    fontWeight: "400",
+    fontSize: "0.875rem",
+  }),
+  singleValue: (base:any) => ({
+    ...base,
+    color: "var(--primary-text)",
+    fontSize: "0.875rem",
+  }),
+  option: (styles:any, { isFocused }:any) => {
+    // const color = chroma(data.color);
+    return {
+      ...styles,
+      backgroundColor: isFocused ? "var(--primary)" : null,
+    };
+  }
+};
+
 export default function RegisterContent() {
   const session = useSession();
   const userId = session.data?.user?.id;
@@ -62,6 +98,7 @@ export default function RegisterContent() {
     e.preventDefault();
     if (registrationPage == 2) await uploadToS3();
     else if (checkForm()) setRegistrationPage(2);
+    else setErrorMessage("* Must complete all fields!");
   }
 
   useEffect(() => {
@@ -281,13 +318,7 @@ export default function RegisterContent() {
                 placeholder="Major"
                 onChange={(e) => handleSelect(e, "major")}
                 menuPortalTarget={isMounted ? document.body : null}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    height: "2.5rem",
-                    border: "1px solid rgba(0,0,0,.1)",
-                  }),
-                }}
+                styles={selectStyles}
               />
               <Select
                 className={styles.select}
@@ -304,13 +335,7 @@ export default function RegisterContent() {
                 }
                 onChange={(e) => handleSelect(e, "pronouns")}
                 menuPortalTarget={isMounted ? document.body : null}
-                styles={{
-                  control: (base) => ({
-                    ...base,
-                    height: "2.5rem",
-                    border: "1px solid rgba(0,0,0,.1)",
-                  }),
-                }}
+                styles={selectStyles}
               />
               <a className={styles.help} href={"mailto:nothing@gmail.com"}>
                 Need help

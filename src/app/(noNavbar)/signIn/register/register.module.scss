@@ -1,11 +1,10 @@
 .main {
-    background: linear-gradient(0deg, rgba(255, 207, 0, 0.8), var(--primary));
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
+  background: linear-gradient(0deg, rgba(255, 207, 0, 0.8), var(--primary));
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .form {
   padding-top: 5rem;
@@ -29,10 +28,15 @@
     margin-bottom: 0.75rem;
     font-weight: 500;
     font-size: 0.875rem;
+    background-color: var(--primary-bg);
     color: var(--primary-text);
     &:focus {
       outline: none !important;
       border-color: var(--primary);
+    }
+    &::placeholder {
+      color: #868585;
+      font-weight: 500;
     }
   }
   .select {
@@ -58,7 +62,7 @@
     button {
       width: 5rem;
       color: var(--primary-text);
-      background-color: rgba(0, 0, 0, 0.1);
+      background-color: transparent;
       height: 2rem;
       border: none;
       font-weight: 600;
@@ -145,6 +149,3 @@
     color: var(--secondary-bg);
   }
 }
-
-  
-  
