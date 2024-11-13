@@ -39,7 +39,7 @@ export default function Regsiter() {
     <SessionProvider>
       <RegisterContext.Provider value={{ formData, setFormData }}>
         <main className={styles.main}>
-          <SignInCard  children={<RegisterContent />} />
+          <SignInCard children={<RegisterContent />} />
         </main>
       </RegisterContext.Provider>
     </SessionProvider>

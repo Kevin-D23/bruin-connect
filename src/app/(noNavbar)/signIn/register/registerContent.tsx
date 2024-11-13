@@ -1,17 +1,16 @@
 "use client";
-import { useContext } from "react";
 import { RegisterContext, RegisterContextType } from "./page";
-import { SyntheticEvent, useEffect, useRef, useState } from "react";
+import { SyntheticEvent, useEffect, useRef, useState, useContext } from "react";
 import Select, { SingleValue } from "react-select";
 import { SignOut } from "@/app/api/auth/actions";
 import { useRouter } from "next/navigation";
-import "react-image-crop/src/ReactCrop.scss";
 import Upload from "@/assets/icons/upload";
 import { majorOptions } from "@/assets/lists/majorOptions";
 import { pronounOptions } from "@/assets/lists/pronouns";
 import Xmark from "@/assets/icons/Xmark";
 import Checkmark from "@/assets/icons/checkmark";
 import ProfileCard from "../../../../components/profileCard/profileCard";
+import "react-image-crop/src/ReactCrop.scss";
 import styles from "./register.module.scss";
 import { useSession } from "next-auth/react";
 import ReactCrop, {
@@ -27,42 +26,6 @@ import Box from "@mui/material/Box";
 type OptionType = {
   value: string;
   label: string;
-};
-
-const selectStyles = {
-  control: (base: any) => ({
-    ...base,
-    height: "2.5rem",
-    border: "1px solid rgba(0,0,0,.1)",
-    backgroundColor: "var(--primary-bg)",
-    color: "var(--primary-text)",
-    fontSize: "0.875rem",
-    fontWeight: "400",
-  }),
-  menuList: (base: any) => ({
-    ...base,
-    color: "var(--primary-text)",
-    backgroundColor: "var(--primary-bg)",
-    fontSize: "0.875rem"
-  }),
-  placeholder: (base: any) => ({
-    ...base,
-    color: "#868585",
-    fontWeight: "400",
-    fontSize: "0.875rem",
-  }),
-  singleValue: (base:any) => ({
-    ...base,
-    color: "var(--primary-text)",
-    fontSize: "0.875rem",
-  }),
-  option: (styles:any, { isFocused }:any) => {
-    // const color = chroma(data.color);
-    return {
-      ...styles,
-      backgroundColor: isFocused ? "var(--primary)" : null,
-    };
-  }
 };
 
 export default function RegisterContent() {
@@ -99,6 +62,28 @@ export default function RegisterContent() {
     if (registrationPage == 2) await uploadToS3();
     else if (checkForm()) setRegistrationPage(2);
     else setErrorMessage("* Must complete all fields!");
+  }
+
+
+  async function uploadToS3() {
+    if (pictureConfirmed && previewCanvasRef.current) {
+      const res = await fetch("http://localhost:8000/s3Url");
+      const { url } = await res.json();
+      const upload = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "image/jpeg", // Ensure the Content-Type matches your file type
+        },
+        body: blob,
+      });
+
+      setFormData((prevState) => ({
+        ...prevState,
+        profile_picture: upload.url.split("?")[0],
+      }));
+
+      setS3Link(upload.url.split("?")[0]);
+    } else setS3Link("null");
   }
 
   useEffect(() => {
@@ -244,26 +229,6 @@ export default function RegisterContent() {
     }
   }
 
-  async function uploadToS3() {
-    if (pictureConfirmed && previewCanvasRef.current) {
-      const res = await fetch("http://localhost:8000/s3Url");
-      const { url } = await res.json();
-      const upload = await fetch(url, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "image/jpeg", // Ensure the Content-Type matches your file type
-        },
-        body: blob,
-      });
-
-      setFormData((prevState) => ({
-        ...prevState,
-        profile_picture: upload.url.split("?")[0],
-      }));
-
-      setS3Link(upload.url.split("?")[0]);
-    } else setS3Link("null");
-  }
 
   return (
     <>
@@ -512,3 +477,40 @@ function setCanvasPreview(
     ctx.restore();
   }
 }
+
+
+const selectStyles = {
+	control: (base: any) => ({
+	  ...base,
+	  height: "2.5rem",
+	  border: "1px solid rgba(0,0,0,.1)",
+	  backgroundColor: "var(--primary-bg)",
+	  color: "var(--primary-text)",
+	  fontSize: "0.875rem",
+	  fontWeight: "400",
+	}),
+	menuList: (base: any) => ({
+	  ...base,
+	  color: "var(--primary-text)",
+	  backgroundColor: "var(--primary-bg)",
+	  fontSize: "0.875rem",
+	}),
+	placeholder: (base: any) => ({
+	  ...base,
+	  color: "#868585",
+	  fontWeight: "400",
+	  fontSize: "0.875rem",
+	}),
+	singleValue: (base: any) => ({
+	  ...base,
+	  color: "var(--primary-text)",
+	  fontSize: "0.875rem",
+	}),
+	option: (styles: any, { isFocused }: any) => {
+	  // const color = chroma(data.color);
+	  return {
+		...styles,
+		backgroundColor: isFocused ? "var(--primary)" : null,
+	  };
+	},
+  };
