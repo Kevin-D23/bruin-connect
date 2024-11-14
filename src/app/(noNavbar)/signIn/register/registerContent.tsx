@@ -366,7 +366,7 @@ export default function RegisterContent() {
               )}
               {/* Display profile preview */}
               {previewCanvasRef.current && blob && (
-                <div>
+                <div className={styles.imgPreview}>
                   <ProfileCard
                     imgLink={previewCanvasRef.current?.toDataURL()}
                     firstName={formData.first_name}
