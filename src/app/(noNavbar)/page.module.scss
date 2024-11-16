@@ -87,25 +87,7 @@
   z-index: 2;
 }
 
-.topCarouselContainer::before,
-.bottomCarouselContainer::before {
-  left: 0;
-  background: linear-gradient(
-    to left,
-    rgba(0, 0, 0, 0),
-    rgba(255, 255, 255, 0.5)
-  );
-}
 
-.topCarouselContainer::after,
-.bottomCarouselContainer::after {
-  right: 0;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0),
-    rgba(255, 255, 255, 0.7)
-  );
-}
 
 @media (min-width: 576px) {
   .logo {
