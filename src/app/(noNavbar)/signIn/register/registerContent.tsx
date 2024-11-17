@@ -23,7 +23,6 @@ import ReactCrop, {
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-
 type OptionType = {
   value: string;
   label: string;
@@ -174,7 +173,8 @@ export default function RegisterContent() {
       // on image load, check if image meets dimension requirements
       imageElement.addEventListener("load", (e: Event) => {
         if (imageError) setImageError("");
-        const { naturalWidth, naturalHeight } = e.currentTarget as HTMLImageElement;
+        const { naturalWidth, naturalHeight } =
+          e.currentTarget as HTMLImageElement;
         if (naturalHeight < MIN_DIMENSION || naturalWidth < MIN_DIMENSION) {
           setImageError("** Image must be at least 150x150 pixels");
           return setTempImg("");
@@ -507,5 +507,9 @@ const selectStyles: StylesConfig<OptionType, false> = {
   option: (base, { isFocused }) => ({
     ...base,
     backgroundColor: isFocused ? "var(--secondary)" : undefined,
+  }),
+  input: (base) => ({
+    ...base,
+    color: "var(--primary-text)",
   }),
 };
