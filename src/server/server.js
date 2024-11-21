@@ -1,5 +1,6 @@
 import express from "express";
 import userRoute from "./routes/User.js";
+import postRoute from "./routes/Post.js"
 import cors from "cors";
 import { generateUploadUrl } from "./s3.js";
 
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(cors());
 
 app.use(userRoute);
+app.use(postRoute)
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
