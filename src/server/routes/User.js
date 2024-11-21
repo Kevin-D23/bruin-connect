@@ -53,6 +53,7 @@ router.post("/api/user", async (req, res) => {
       major,
       pronouns,
     } = req.body;
+
     const userInfo = {
       user_id,
       email,
@@ -63,6 +64,7 @@ router.post("/api/user", async (req, res) => {
       major,
       pronouns,
     };
+    
     try {
       const newUser = await createUser(userInfo);
       if (newUser) res.status(200).json(newUser);
