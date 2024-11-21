@@ -12,3 +12,46 @@
 // 		FOREIGN KEY (club_id)
 // 			REFERENCES club(club_id)
 // );
+
+import db from "../db";
+
+type Post = {
+  post_id: String;
+  user_id: String;
+  club_id: String;
+  content: String;
+  images: [String];
+  created_at: String;
+};
+
+// retrieve a post by its ID
+export async function getPostById({ post_id }: Post) {
+  const query = `SELECT post_id, user_id, club_id, content, images, created_at, FROM "user" WHERE post_id = ($1)`;
+  const values = [[post_id]];
+
+  try {
+    const result = await db.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error getting post:", error);
+  }
+}
+
+// Creates a post instance
+export async function createPost({
+  post_id,
+  user_id,
+  club_id,
+  content,
+  images,
+  created_at,
+}: Post) {
+  const query = `INSERT INTO "user" (post_id, user_id, club_id, content, images, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING post_id`;
+  const values = [post_id, user_id, club_id, content, images, created_at];
+  try {
+    const result = await db.query(query, values);
+    return result.rows[0];
+  } catch (error) {
+    console.error("Error creating post:", error);
+  }
+}
