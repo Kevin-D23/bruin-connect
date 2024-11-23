@@ -1,6 +1,7 @@
 import express from "express";
 import userRoute from "./routes/User.js";
 import postRoute from "./routes/Post.js"
+import clubRoute from "./routes/Club.js"
 import cors from "cors";
 import { generateUploadUrl } from "./s3.js";
 
@@ -13,6 +14,7 @@ app.use(cors());
 
 app.use(userRoute);
 app.use(postRoute)
+app.use(clubRoute)
 
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
