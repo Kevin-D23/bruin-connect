@@ -9,7 +9,7 @@ router.get("/api/post/:postId", async (req, res) => {
 
   try {
     const post = await getPostById({ post_id });
-    res.status(200).json(user);
+    res.status(200).json(post);
   } catch (error) {
     console.error("Error getting post:", error);
     res.status(500);
