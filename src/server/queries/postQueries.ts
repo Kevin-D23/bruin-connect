@@ -44,10 +44,9 @@ export async function createPost({
   club_id,
   content,
   images,
-  created_at,
 }: Post) {
-  const query = `INSERT INTO post (post_id, user_id, club_id, content, images, created_at) VALUES ($1, $2, $3, $4, $5, $6) RETURNING post_id`;
-  const values = [post_id, user_id, club_id, content, images, created_at];
+  const query = `INSERT INTO post (post_id, user_id, club_id, content, images) VALUES ($1, $2, $3, $4, $5, $6) RETURNING post_id`;
+  const values = [post_id, user_id, club_id, content, images];
   try {
     const result = await db.query(query, values);
     return result.rows[0];

@@ -18,7 +18,7 @@ router.get("/api/post/:postId", async (req, res) => {
 
 // Route to create a post
 router.post("/api/post", async (req, res) => {
-  const { post_id, user_id, club_id, content, images, created_at } = req.body;
+  const { post_id, user_id, club_id, content, images } = req.body;
 
   const postInfo = {
     post_id,
@@ -26,7 +26,6 @@ router.post("/api/post", async (req, res) => {
     club_id,
     content,
     images,
-    created_at,
   };
 
   try {
