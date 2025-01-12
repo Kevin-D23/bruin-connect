@@ -5,7 +5,6 @@ import Clubs from "../../assets/icons/clubs";
 import Post from "../../assets/icons/post";
 import Friends from "../../assets/icons/friends";
 import Messages from "../../assets/icons/messages";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
